@@ -4,5 +4,5 @@
 #include <stdio.h>
 
 int main(){
-  print("Hola Mundo");
+  printf("Hola Mundo");
 }

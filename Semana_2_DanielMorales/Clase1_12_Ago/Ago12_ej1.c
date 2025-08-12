@@ -60,5 +60,8 @@ int main(){
     printf("%f \n",resultado[i]);
   }
   
+  printf(" \n Pruebas de operación \n");
+
+  printf("Pi+Pi= %f", 3.14159265346+3.14159265346); //Observamos que se redondea nuestro resultado
 
 }

@@ -1,0 +1,127 @@
+INICIO
+    REPETIR
+        MOSTRAR "Cual es la función que va a usar??"
+        MOSTRAR "1. Exponencial (e**x)"
+        MOSTRAR "2. Coseno"
+        MOSTRAR "3. Seno"
+        MOSTRAR "4. Logaritmo natural"
+        MOSTRAR "5. Exponente (a**x)"
+        
+        LEER opcion
+        
+        SI opcion ES VÁLIDA (1-5) ENTONCES
+            SEGÚN opcion HACER
+                CASO 1:  // Exponencial e^x
+                    MOSTRAR "Introduzca un valor para la exponencial"
+                    LEER x
+                    real = e^x
+                    aproximacion = 1.0
+                    termino = 1.0
+                    n = 1
+                    error = 100.0
+                    
+                    MIENTRAS error > 0.1 Y n < 100 HACER
+                        termino = termino * x / n
+                        aproximacion = aproximacion + termino
+                        error = ABS((real - aproximacion) / real) * 100
+                        n = n + 1
+                        MOSTRAR "Aproximacion:", aproximacion, "Error:", error, "%"
+                    FIN MIENTRAS
+                    
+                CASO 2:  // Coseno
+                    MOSTRAR "Introduzca un valor para el coseno (radianes)"
+                    LEER x
+                    real = cos(x)
+                    aproximacion = 1.0
+                    termino = 1.0
+                    n = 1
+                    error = 100.0
+                    
+                    MIENTRAS error > 0.1 Y n < 100 HACER
+                        termino = termino * (-x*x) / ((2*n-1)*(2*n))
+                        aproximacion = aproximacion + termino
+                        error = ABS((real - aproximacion) / real) * 100
+                        n = n + 1
+                        MOSTRAR "Aproximacion:", aproximacion, "Error:", error, "%"
+                    FIN MIENTRAS
+                    
+                CASO 3:  // Seno
+                    MOSTRAR "Introduzca un valor para el seno (radianes)"
+                    LEER x
+                    real = sin(x)
+                    aproximacion = x
+                    termino = x
+                    n = 1
+                    error = 100.0
+                    
+                    MIENTRAS error > 0.1 Y n < 100 HACER
+                        termino = termino * (-x*x) / ((2*n)*(2*n+1))
+                        aproximacion = aproximacion + termino
+                        error = ABS((real - aproximacion) / real) * 100
+                        n = n + 1
+                        MOSTRAR "Aproximacion:", aproximacion, "Error:", error, "%"
+                    FIN MIENTRAS
+                    
+                CASO 4:  // Logaritmo natural
+                    MOSTRAR "Introduzca un valor para el logaritmo natural (x > 0)"
+                    LEER x
+                    SI x > 0 ENTONCES
+                        real = ln(x)
+                        z = (x-1)/(x+1)
+                        aproximacion = 2*z
+                        termino = z
+                        n = 1
+                        error = 100.0
+                        
+                        MIENTRAS error > 0.1 Y n < 100 HACER
+                            termino = termino * z*z
+                            nuevo_termino = 2 * termino / (2*n+1)
+                            aproximacion = aproximacion + nuevo_termino
+                            error = ABS((real - aproximacion) / real) * 100
+                            n = n + 1
+                            MOSTRAR "Aproximacion:", aproximacion, "Error:", error, "%"
+                        FIN MIENTRAS
+                    SINO
+                        MOSTRAR "Error: x debe ser mayor que 0"
+                    FIN SI
+                    
+                CASO 5:  // Exponente a^x
+                    MOSTRAR "Introduzca la base (a)"
+                    LEER a
+                    MOSTRAR "Introduzca el exponente (x)"
+                    LEER x
+                    real = a^x
+                    ln_a = ln(a)
+                    exponente = x * ln_a
+                    
+                    aproximacion = 1.0
+                    termino = 1.0
+                    n = 1
+                    error = 100.0
+                    
+                    MIENTRAS error > 0.1 Y n < 100 HACER
+                        termino = termino * exponente / n
+                        aproximacion = aproximacion + termino
+                        error = ABS((real - aproximacion) / real) * 100
+                        n = n + 1
+                        MOSTRAR "Aproximacion:", aproximacion, "Error:", error, "%"
+                    FIN MIENTRAS
+            FIN SEGÚN
+            
+            // Mostrar resultados finales
+            MOSTRAR "Valor real:", real
+            MOSTRAR "Aproximacion final:", aproximacion
+            MOSTRAR "Error final:", error, "%"
+            MOSTRAR "Terminos usados:", n
+            
+        SINO
+            MOSTRAR "Opción no válida"
+        FIN SI
+        
+        MOSTRAR "Volver a iniciar??? (1 = Si, 0 = No)"
+        LEER repetir
+        
+    MIENTRAS repetir == 1
+    
+    MOSTRAR "Programa terminado"
+FIN

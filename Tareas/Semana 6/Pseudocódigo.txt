@@ -1,0 +1,43 @@
+ALGORITMO MetodoBiseccion
+    ENTRADA: a, b (extremos del intervalo)
+    SALIDA: raíz aproximada, error, iteraciones
+    
+    f1 ← sin(10*a) - cos(3*a)
+    f2 ← sin(10*b) - cos(3*b)
+    
+    SI f1 * f2 ≥ 0 ENTONCES
+        ESCRIBIR "Error: No hay cambio de signo"
+        TERMINAR
+    FIN SI
+    
+    MaxEr ← 0.01
+    nmax ← 100
+    n ← 0
+    Error ← 100
+    k_anterior ← a
+    
+    ESCRIBIR "Iter  a        b        k        f(k)     Error"
+    
+    MIENTRAS Error > MaxEr Y n < nmax HACER
+        k ← (a + b) / 2
+        fk ← sin(10*k) - cos(3*k)
+        fa ← sin(10*a) - cos(3*a)
+        
+        SI n > 0 ENTONCES
+            Error ← |(k - k_anterior) / k|
+        FIN SI
+        
+        ESCRIBIR n+1, a, b, k, fk, Error
+        
+        SI fa * fk < 0 ENTONCES
+            b ← k
+        SINO
+            a ← k
+        FIN SI
+        
+        k_anterior ← k
+        n ← n + 1
+    FIN MIENTRAS
+    
+    ESCRIBIR "Raíz: ", k, " con error: ", Error
+FIN ALGORITMO

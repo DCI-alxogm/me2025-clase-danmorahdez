@@ -1,0 +1,133 @@
+ALGORITMO ResolucionSistemaGaussSeidel
+
+VARIABLES:
+    Orden: entero
+    Matriz: arreglo bidimensional de reales de dimensiones [Orden][Orden+1]
+    X: arreglo de reales de tamaño [Orden]
+    X_anterior: arreglo de reales de tamaño [Orden]
+    iteraciones: entero
+    tolerancia: real
+    convergio: entero (0=falso, 1=verdadero)
+    dominante: entero (0=falso, 1=verdadero)
+    i, j, iter: enteros
+    error, suma: reales
+
+INICIO:
+    // SECCIÓN 1: ENTRADA DE DATOS
+    ESCRIBIR "Porfavor mencione el número de incógnitas"
+    LEER Orden
+    
+    ESCRIBIR "Porfavor digite los datos de la matriz"
+    
+    // Inicializar matriz Orden x (Orden+1)
+    PARA i ← 0 HASTA Orden-1 CON PASO 1 HACER:
+        PARA j ← 0 HASTA Orden CON PASO 1 HACER:
+            ESCRIBIR "De el valor en la coordenada: [", i, "] [", j, "]: "
+            LEER Matriz[i][j]
+        FIN PARA
+    FIN PARA
+    
+    // SECCIÓN 2: MOSTRAR MATRIZ INGRESADA
+    ESCRIBIR "Tu matriz es: "
+    PARA i ← 0 HASTA Orden-1 CON PASO 1 HACER:
+        PARA j ← 0 HASTA Orden CON PASO 1 HACER:
+            ESCRIBIR Matriz[i][j] + "\t"
+        FIN PARA
+        ESCRIBIR ""  // Salto de línea
+    FIN PARA
+    
+    // SECCIÓN 3: CONFIGURACIÓN MÉTODO GAUSS-SEIDEL
+    iteraciones ← 100
+    tolerancia ← 0.0001
+    convergio ← 0
+    
+    // Inicializar vectores solución
+    PARA i ← 0 HASTA Orden-1 CON PASO 1 HACER:
+        X[i] ← 0
+        X_anterior[i] ← 0
+    FIN PARA
+    
+    // SECCIÓN 4: BUCLE ITERATIVO PRINCIPAL
+    PARA iter ← 0 HASTA iteraciones-1 CON PASO 1 HACER:
+        
+        // 4.1: Guardar valores anteriores para cálculo de error
+        PARA i ← 0 HASTA Orden-1 CON PASO 1 HACER:
+            X_anterior[i] ← X[i]
+        FIN PARA
+        
+        // 4.2: Actualizar cada variable x_i
+        PARA i ← 0 HASTA Orden-1 CON PASO 1 HACER:
+            suma ← 0.0
+            
+            // Calcular sumatoria: Σ(a_ij * x_j) para j ≠ i
+            PARA j ← 0 HASTA Orden-1 CON PASO 1 HACER:
+                SI j ≠ i ENTONCES:
+                    suma ← suma + (Matriz[i][j] * X[j])
+                FIN SI
+            FIN PARA
+            
+            // 4.3: Verificar divisor cero
+            SI Matriz[i][i] = 0 ENTONCES:
+                ESCRIBIR "Error: Elemento diagonal cero en fila ", i+1
+                TERMINAR PROGRAMA CON CÓDIGO 1
+            FIN SI
+            
+            // 4.4: Calcular nuevo valor de x_i
+            // Fórmula: x_i = (b_i - Σ(a_ij * x_j)) / a_ii
+            X[i] ← (Matriz[i][Orden] - suma) / Matriz[i][i]
+        FIN PARA
+        
+        // 4.5: Calcular error de convergencia
+        error ← 0.0
+        PARA i ← 0 HASTA Orden-1 CON PASO 1 HACER:
+            error ← error + ABS(X[i] - X_anterior[i])
+        FIN PARA
+        
+        // 4.6: Verificar criterio de convergencia
+        SI error < tolerancia ENTONCES:
+            ESCRIBIR "Convergio en ", iter+1, " iteraciones"
+            convergio ← 1
+            SALIR DEL BUCLE
+        FIN SI
+        
+    FIN PARA
+    
+    // SECCIÓN 5: VERIFICAR CONVERGENCIA
+    SI convergio = 0 ENTONCES:
+        ESCRIBIR "No convergio después de ", iteraciones, " iteraciones"
+    FIN SI
+    
+    // SECCIÓN 6: MOSTRAR RESULTADOS
+    ESCRIBIR "Las soluciones son:"
+    PARA i ← 0 HASTA Orden-1 CON PASO 1 HACER:
+        ESCRIBIR "x", i+1, " = ", X[i]
+    FIN PARA
+    
+    // SECCIÓN 7: ANÁLISIS DE CONVERGENCIA - DIAGONAL DOMINANTE
+    dominante ← 1
+    
+    PARA i ← 0 HASTA Orden-1 CON PASO 1 HACER:
+        suma ← 0.0
+        
+        // Calcular suma de valores absolutos de elementos no diagonales
+        PARA j ← 0 HASTA Orden-1 CON PASO 1 HACER:
+            SI j ≠ i ENTONCES:
+                suma ← suma + ABS(Matriz[i][j])
+            FIN SI
+        FIN PARA
+        
+        // Verificar condición de diagonal dominante
+        SI ABS(Matriz[i][i]) ≤ suma ENTONCES:
+            dominante ← 0
+            ESCRIBIR "Advertencia: La matriz no es diagonalmente dominante en fila ", i+1
+        FIN SI
+    FIN PARA
+    
+    // SECCIÓN 8: CONCLUSIÓN SOBRE CONVERGENCIA
+    SI dominante = 1 ENTONCES:
+        ESCRIBIR "La matriz es diagonalmente dominante"
+    FIN SI
+
+    TERMINAR PROGRAMA CON CÓDIGO 0
+
+FIN ALGORITMO

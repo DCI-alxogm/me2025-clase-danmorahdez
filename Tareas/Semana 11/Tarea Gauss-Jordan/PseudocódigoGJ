@@ -1,0 +1,148 @@
+INICIO PROGRAMA
+
+    // ENTRADA DE DATOS
+    LEER Orden (número de incógnitas)
+    
+    DECLARAR Matriz[Orden+1][Orden] como real
+    
+    // LLENAR MATRIZ
+    PARA i = 0 HASTA Orden-1 HACER
+        PARA j = 0 HASTA Orden HACER
+            IMPRIMIR "De el valor en la coordenada: [j] [i]"
+            LEER Matriz[j][i]
+        FIN PARA
+    FIN PARA
+    
+    // MOSTRAR MATRIZ ORIGINAL
+    IMPRIMIR "Tu matriz es:"
+    PARA i = 0 HASTA Orden-1 HACER
+        PARA j = 0 HASTA Orden HACER
+            IMPRIMIR Matriz[j][i] + "\t"
+        FIN PARA
+        IMPRIMIR salto de línea
+    FIN PARA
+    
+    // CREAR MATRIZ INTERMEDIA NORMALIZADA
+    DECLARAR MatrizIntermedia[Orden+1][Orden] como real
+    
+    // COPIAR MATRIZ ORIGINAL
+    PARA i = 0 HASTA Orden-1 HACER
+        PARA j = 0 HASTA Orden HACER
+            MatrizIntermedia[j][i] = Matriz[j][i]
+        FIN PARA
+    FIN PARA
+    
+    // NORMALIZAR MATRIZ INTERMEDIA
+    PARA i = 0 HASTA Orden-1 HACER
+        max_val = 0
+        // ENCONTRAR VALOR MÁXIMO EN LA FILA
+        PARA j = 0 HASTA Orden-1 HACER
+            SI MatrizIntermedia[j][i] > max_val ENTONCES
+                max_val = MatrizIntermedia[j][i]
+            FIN SI
+        FIN PARA
+        
+    FIN PARA
+    
+    // MOSTRAR MATRIZ INTERMEDIA NORMALIZADA
+    IMPRIMIR "Matriz intermedia normalizada:"
+    PARA i = 0 HASTA Orden-1 HACER
+        PARA j = 0 HASTA Orden HACER
+            IMPRIMIR MatrizIntermedia[j][i] + "\t"
+        FIN PARA
+        IMPRIMIR salto de línea
+    FIN PARA
+    
+    // ELIMINACIÓN GAUSSIANA - FASE SUPERIOR
+    PARA j = 0 HASTA Orden-2 HACER
+        
+        // PIVOTEO PARCIAL
+        fila_max = j
+        PARA i = j+1 HASTA Orden-1 HACER
+            SI Matriz[j][i] > Matriz[j][fila_max] ENTONCES
+                fila_max = i
+            FIN SI
+        FIN PARA
+        
+        // INTERCAMBIAR FILAS SI ES NECESARIO
+        SI fila_max != j ENTONCES
+            PARA k = 0 HASTA Orden HACER
+                temp = Matriz[k][j]
+                Matriz[k][j] = Matriz[k][fila_max]
+                Matriz[k][fila_max] = temp
+            FIN PARA
+        FIN SI
+        
+        // ELIMINACIÓN HACIA ABAJO
+        PARA i = j HASTA Orden-2 HACER
+            aux = Matriz[j][i+1] / Matriz[j][j]
+            PARA k = j HASTA Orden HACER
+                Matriz[k][i+1] = Matriz[k][i+1] - (Matriz[k][j] * aux)
+            FIN PARA
+        FIN PARA
+    FIN PARA
+    
+    // MOSTRAR MATRIZ TRIANGULAR SUPERIOR
+    IMPRIMIR "Tu nueva matriz es:"
+    PARA i = 0 HASTA Orden-1 HACER
+        PARA j = 0 HASTA Orden HACER
+            IMPRIMIR Matriz[j][i] + "\t"
+        FIN PARA
+        IMPRIMIR salto de línea
+    FIN PARA
+    
+    // CÁLCULO DEL DETERMINANTE
+    mult = 1
+    PARA i = Orden-1 HASTA 0 (decrementando) HACER
+        mult = mult * Matriz[i][i]
+    FIN PARA
+    IMPRIMIR "El determinante es: " + mult
+    SI mult < 1 ENTONCES
+        IMPRIMIR "Advertencia, el determinante tiene un valor muy bajo (<1)"
+    FIN SI
+    
+    // SUSTITUCIÓN HACIA ATRÁS
+    DECLARAR R[Orden] como real
+    
+    PARA i = Orden-1 HASTA 0 (decrementando) HACER
+        suma = 0
+        PARA j = i+1 HASTA Orden-1 HACER
+            suma = suma + Matriz[j][i] * R[j]
+        FIN PARA
+        R[i] = (Matriz[Orden][i] - suma) / Matriz[i][i]
+    FIN PARA
+    
+    // MOSTRAR RESULTADOS PARCIALES
+    IMPRIMIR "Las soluciones son:"
+    PARA i = 0 HASTA Orden-1 HACER
+        IMPRIMIR "x" + (i+1) + " = " + R[i]
+    FIN PARA
+    
+    // ELIMINACIÓN GAUSSIANA - FASE INFERIOR
+    PARA m = Orden-1 HASTA 0 (decrementando) HACER
+        PARA j = m-1 HASTA 0 (decrementando) HACER
+            aux = Matriz[m][j] / Matriz[m][m]
+            PARA k = Orden HASTA 0 (decrementando) HACER
+                Matriz[k][j] = Matriz[k][j] - (Matriz[k][m] * aux)
+            FIN PARA
+        FIN PARA
+    FIN PARA
+    
+    // MOSTRAR MATRIZ FINAL (DIAGONAL)
+    IMPRIMIR "Tu matriz final es:"
+    PARA i = 0 HASTA Orden-1 HACER
+        PARA j = 0 HASTA Orden HACER
+            IMPRIMIR Matriz[j][i] + "\t"
+        FIN PARA
+        IMPRIMIR salto de línea
+    FIN PARA
+    
+    // CÁLCULO FINAL DE SOLUCIONES
+    DECLARAR X[Orden] como real
+    IMPRIMIR "Resultados:"
+    PARA i = 0 HASTA Orden-1 HACER
+        X[i] = Matriz[Orden][i] / Matriz[i][i]
+        IMPRIMIR "X[" + i + "] = " + X[i]
+    FIN PARA
+
+FIN PROGRAMA

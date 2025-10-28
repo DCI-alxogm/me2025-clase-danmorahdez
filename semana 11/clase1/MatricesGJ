@@ -1,0 +1,129 @@
+ALGORITMO ResolucionSistemaEcuaciones
+
+VARIABLES:
+    Orden: entero
+    Matriz: arreglo bidimensional de reales [Orden+1][Orden]
+    R, X: arreglos de reales [Orden]
+    i, j, k, m, fila_max: enteros
+    aux, mult, suma, temp: reales
+
+INICIO:
+    // ENTRADA DE DATOS
+    ESCRIBIR "Porfavor mencione el número de incógnitas"
+    LEER Orden
+    
+    ESCRIBIR "Porfavor digite los datos de la matriz"
+    
+    // Crear matriz de tamaño (Orden+1) x Orden
+    // Las primeras 'Orden' columnas son coeficientes, la última columna es términos independientes
+    
+    PARA i DESDE 0 HASTA Orden-1 HACER:
+        PARA j DESDE 0 HASTA Orden HACER:
+            ESCRIBIR "De el valor en la coordenada: [", j, "] [", i, "]"
+            LEER Matriz[j][i]
+        FIN PARA
+    FIN PARA
+    
+    // MOSTRAR MATRIZ ORIGINAL
+    ESCRIBIR "Tu matriz es: "
+    PARA i DESDE 0 HASTA Orden-1 HACER:
+        PARA j DESDE 0 HASTA Orden HACER:
+            ESCRIBIR Matriz[j][i] + "\t"
+        FIN PARA
+        ESCRIBIR salto de línea
+    FIN PARA
+    
+    // ELIMINACIÓN GAUSSIANA CON PIVOTEO PARCIAL
+    
+    // Fase de eliminación hacia adelante
+    PARA j DESDE 0 HASTA Orden-2 HACER:
+        
+        // PIVOTEO PARCIAL
+        fila_max ← j
+        PARA i DESDE j+1 HASTA Orden-1 HACER:
+            SI ABS(Matriz[j][i]) > ABS(Matriz[j][fila_max]) ENTONCES:
+                fila_max ← i
+            FIN SI
+        FIN PARA
+        
+        // INTERCAMBIO DE FILAS si es necesario
+        SI fila_max ≠ j ENTONCES:
+            PARA k DESDE 0 HASTA Orden HACER:
+                temp ← Matriz[k][j]
+                Matriz[k][j] ← Matriz[k][fila_max]
+                Matriz[k][fila_max] ← temp
+            FIN PARA
+        FIN SI
+        
+        // ELIMINACIÓN
+        PARA i DESDE j HASTA Orden-2 HACER:
+            aux ← Matriz[j][i+1] / Matriz[j][j]
+            PARA k DESDE j HASTA Orden HACER:
+                Matriz[k][i+1] ← Matriz[k][i+1] - (Matriz[k][j] * aux)
+            FIN PARA
+        FIN PARA
+    FIN PARA
+    
+    // MOSTRAR MATRIZ TRIANGULAR SUPERIOR
+    ESCRIBIR "Tu nueva matriz es:"
+    PARA i DESDE 0 HASTA Orden-1 HACER:
+        PARA j DESDE 0 HASTA Orden HACER:
+            ESCRIBIR Matriz[j][i] + "\t"
+        FIN PARA
+        ESCRIBIR salto de línea
+    FIN PARA
+    
+    // CÁLCULO DEL DETERMINANTE
+    mult ← 1
+    PARA i DESDE Orden-1 HASTA 0 (decrementando) HACER:
+        mult ← mult * Matriz[i][i]
+    FIN PARA
+    
+    ESCRIBIR "El determinante es: " + mult
+    
+    SI mult < 1 ENTONCES:
+        ESCRIBIR "Advertencia, el determinante tiene un valor muy bajo (<1)"
+    FIN SI
+    
+    // SUSTITUCIÓN HACIA ATRÁS
+    PARA i DESDE Orden-1 HASTA 0 (decrementando) HACER:
+        suma ← 0
+        PARA j DESDE i+1 HASTA Orden-1 HACER:
+            suma ← suma + (Matriz[j][i] * R[j])
+        FIN PARA
+        R[i] ← (Matriz[Orden][i] - suma) / Matriz[i][i]
+    FIN PARA
+    
+    // MOSTRAR RESULTADOS PRIMER MÉTODO
+    ESCRIBIR "Las soluciones son:"
+    PARA i DESDE 0 HASTA Orden-1 HACER:
+        ESCRIBIR "x" + (i+1) + " = " + R[i]
+    FIN PARA
+    
+    // ELIMINACIÓN HACIA ATRÁS (para matriz diagonal)
+    PARA m DESDE Orden-1 HASTA 0 (decrementando) HACER:
+        PARA j DESDE m-1 HASTA 0 (decrementando) HACER:
+            aux ← Matriz[m][j] / Matriz[m][m]
+            PARA k DESDE Orden HASTA 0 (decrementando) HACER:
+                Matriz[k][j] ← Matriz[k][j] - (Matriz[k][m] * aux)
+            FIN PARA
+        FIN PARA
+    FIN PARA
+    
+    // MOSTRAR MATRIZ DIAGONAL
+    ESCRIBIR "Tu matriz final es:"
+    PARA i DESDE 0 HASTA Orden-1 HACER:
+        PARA j DESDE 0 HASTA Orden HACER:
+            ESCRIBIR Matriz[j][i] + "\t"
+        FIN PARA
+        ESCRIBIR salto de línea
+    FIN PARA
+    
+    // SOLUCIÓN FINAL
+    ESCRIBIR "Resultados:"
+    PARA i DESDE 0 HASTA Orden-1 HACER:
+        X[i] ← Matriz[Orden][i] / Matriz[i][i]
+        ESCRIBIR "X[" + i + "] = " + X[i]
+    FIN PARA
+
+FIN ALGORITMO

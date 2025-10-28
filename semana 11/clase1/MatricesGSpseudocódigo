@@ -1,0 +1,117 @@
+ALGORITMO MetodoGaussSeidel
+
+VARIABLES:
+    Orden: entero
+    Matriz: arreglo bidimensional de reales [Orden+1][Orden]
+    X, X_anterior: arreglos de reales [Orden]
+    iteraciones, iter, dominante: enteros
+    tolerancia, error, suma: reales
+    i, j: enteros
+
+INICIO:
+    // ENTRADA DE DATOS
+    ESCRIBIR "Porfavor mencione el número de incógnitas"
+    LEER Orden
+    
+    ESCRIBIR "Porfavor digite los datos de la matriz"
+    
+    // Crear matriz de tamaño (Orden+1) x Orden
+    // Columnas 0 a Orden-1: coeficientes del sistema
+    // Columna Orden: términos independientes
+    
+    PARA i DESDE 0 HASTA Orden-1 HACER:
+        PARA j DESDE 0 HASTA Orden HACER:
+            ESCRIBIR "De el valor en la coordenada: [", j, "] [", i, "]"
+            LEER Matriz[j][i]
+        FIN PARA
+    FIN PARA
+    
+    // MOSTRAR MATRIZ ORIGINAL
+    ESCRIBIR "Tu matriz es: "
+    PARA i DESDE 0 HASTA Orden-1 HACER:
+        PARA j DESDE 0 HASTA Orden HACER:
+            ESCRIBIR Matriz[j][i] + "\t"
+        FIN PARA
+        ESCRIBIR salto de línea
+    FIN PARA
+    
+    // MÉTODO DE GAUSS-SEIDEL
+    
+    // INICIALIZACIÓN DE VARIABLES
+    iteraciones ← 100
+    tolerancia ← 0.0001
+    
+    // INICIALIZAR VECTOR SOLUCIÓN
+    PARA i DESDE 0 HASTA Orden-1 HACER:
+        X[i] ← 0
+        X_anterior[i] ← 0
+    FIN PARA
+    
+    // ITERACIONES DEL MÉTODO
+    PARA iter DESDE 0 HASTA iteraciones-1 HACER:
+        
+        // GUARDAR VALORES ANTERIORES
+        PARA i DESDE 0 HASTA Orden-1 HACER:
+            X_anterior[i] ← X[i]
+        FIN PARA
+        
+        // CALCULAR NUEVOS VALORES (ACTUALIZACIÓN SIMULTÁNEA)
+        PARA i DESDE 0 HASTA Orden-1 HACER:
+            suma ← 0
+            
+            // SUMA DE PRODUCTOS (usando valores ya actualizados)
+            PARA j DESDE 0 HASTA Orden-1 HACER:
+                SI j ≠ i ENTONCES:
+                    suma ← suma + (Matriz[j][i] * X[j])
+                FIN SI
+            FIN PARA
+            
+            // CALCULAR NUEVO VALOR DE X[i]
+            X[i] ← (Matriz[Orden][i] - suma) / Matriz[i][i]
+        FIN PARA
+        
+        // CALCULAR ERROR (norma 1 de la diferencia)
+        error ← 0
+        PARA i DESDE 0 HASTA Orden-1 HACER:
+            error ← error + ABS(X[i] - X_anterior[i])
+        FIN PARA
+        
+        // VERIFICAR CONVERGENCIA
+        SI error < tolerancia ENTONCES:
+            ESCRIBIR "Convergió en " + (iter+1) + " iteraciones"
+            TERMINAR BUCLE
+        FIN SI
+        
+    FIN PARA
+    
+    // MOSTRAR RESULTADOS
+    ESCRIBIR "Las soluciones son:"
+    PARA i DESDE 0 HASTA Orden-1 HACER:
+        ESCRIBIR "x" + (i+1) + " = " + X[i]
+    FIN PARA
+    
+    // VERIFICAR DIAGONAL DOMINANTE
+    dominante ← 1
+    
+    PARA i DESDE 0 HASTA Orden-1 HACER:
+        suma ← 0
+        
+        // CALCULAR SUMA DE VALORES ABSOLUTOS DE ELEMENTOS NO DIAGONALES
+        PARA j DESDE 0 HASTA Orden-1 HACER:
+            SI j ≠ i ENTONCES:
+                suma ← suma + ABS(Matriz[j][i])
+            FIN SI
+        FIN PARA
+        
+        // VERIFICAR CONDICIÓN DE DIAGONAL DOMINANTE
+        SI ABS(Matriz[i][i]) ≤ suma ENTONCES:
+            dominante ← 0
+            ESCRIBIR "Advertencia: La matriz no es diagonalmente dominante en fila " + (i+1)
+        FIN SI
+    FIN PARA
+    
+    SI dominante = 1 ENTONCES:
+        ESCRIBIR "La matriz es diagonalmente dominante"
+    FIN SI
+
+FIN ALGORITMO

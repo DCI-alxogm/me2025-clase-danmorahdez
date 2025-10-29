@@ -1,0 +1,89 @@
+INICIO PROGRAMA
+
+    LEER Orden
+    DECLARAR Matriz[Orden+1][Orden]
+    
+    // Leer matriz del usuario
+    PARA i = 0 HASTA Orden-1
+        PARA j = 0 HASTA Orden
+            LEER Matriz[j][i]
+        FIN PARA
+    FIN PARA
+    
+    // Mostrar matriz original
+    IMPRIMIR "Tu matriz es:"
+    PARA i = 0 HASTA Orden-1
+        PARA j = 0 HASTA Orden
+            IMPRIMIR Matriz[j][i]
+        FIN PARA
+        IMPRIMIR salto de línea
+    FIN PARA
+    
+    // Método Gauss-Seidel
+    DECLARAR X[Orden], X_anterior[Orden]
+    iteraciones = 100
+    tolerancia = 0.0001
+    
+    // Inicializar vectores
+    PARA i = 0 HASTA Orden-1
+        X[i] = 0
+        X_anterior[i] = 0
+    FIN PARA
+    
+    // Iteraciones del método
+    PARA iter = 0 HASTA iteraciones-1
+        // Copiar valores anteriores
+        PARA i = 0 HASTA Orden-1
+            X_anterior[i] = X[i]
+        FIN PARA
+        
+        // Calcular nuevos valores
+        PARA i = 0 HASTA Orden-1
+            suma = 0
+            PARA j = 0 HASTA Orden-1
+                SI j != i ENTONCES
+                    suma = suma + Matriz[j][i] * X[j]
+                FIN SI
+            FIN PARA
+            X[i] = (Matriz[Orden][i] - suma) / Matriz[i][i]
+        FIN PARA
+        
+        // Verificar convergencia
+        error = 0
+        PARA i = 0 HASTA Orden-1
+            error = error + ABS(X[i] - X_anterior[i])
+        FIN PARA
+        
+        SI error < tolerancia ENTONCES
+            IMPRIMIR "Convergió en " + (iter+1) + " iteraciones"
+            TERMINAR iteraciones
+        FIN SI
+    FIN PARA
+    
+    // Mostrar resultados
+    IMPRIMIR "Las soluciones son:"
+    PARA i = 0 HASTA Orden-1
+        IMPRIMIR "x" + (i+1) + " = " + X[i]
+    FIN PARA
+    
+    // Verificar diagonal dominante
+    dominante = VERDADERO
+    PARA i = 0 HASTA Orden-1
+        suma = 0
+        PARA j = 0 HASTA Orden-1
+            SI j != i ENTONCES
+                suma = suma + ABS(Matriz[j][i])
+            FIN SI
+        FIN PARA
+        
+        SI ABS(Matriz[i][i]) <= suma ENTONCES
+            dominante = FALSO
+            IMPRIMIR "Advertencia: La matriz no es diagonalmente dominante en fila " + (i+1)
+        FIN SI
+    FIN PARA
+    
+    SI dominante ENTONCES
+        IMPRIMIR "La matriz es diagonalmente dominante"
+    FIN SI
+
+FIN PROGRAMA

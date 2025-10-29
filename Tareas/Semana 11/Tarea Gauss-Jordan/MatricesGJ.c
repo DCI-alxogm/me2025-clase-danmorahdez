@@ -72,7 +72,7 @@ int main(){
     }
   }
   
-  printf("Matriz intermedia normalizada:\n");
+  printf("Matriz normalizada:\n");
   for(int i = 0; i < Orden; i++){
     for (int j = 0; j < Orden + 1; j++){
       printf("%f \t",MatrizIntermedia[j][i]);
@@ -85,24 +85,24 @@ int main(){
     //Pivoteo
     int fila_max = j;
     for(int i = j+1; i < Orden; i++){
-      if(Matriz[j][i] > Matriz[j][fila_max]){
+      if(MatrizIntermedia[j][i] > MatrizIntermedia[j][fila_max]){
         fila_max = i;
       }
     }
     
     if(fila_max != j){
       for(int k = 0; k < Orden + 1; k++){
-        float temp = Matriz[k][j];
-        Matriz[k][j] = Matriz[k][fila_max];
-        Matriz[k][fila_max] = temp;
+        float temp = MatrizIntermedia[k][j];
+        MatrizIntermedia[k][j] = MatrizIntermedia[k][fila_max];
+        MatrizIntermedia[k][fila_max] = temp;
       }
     }
     
     for(int i = j; i < Orden-1; i++){
-      float aux = Matriz[j][i+1]/Matriz[j][j];
-      //printf("%f / %f \n",Matriz[j][i+1],Matriz[j][j]);
+      float aux = MatrizIntermedia[j][i+1]/MatrizIntermedia[j][j];
+      //printf("%f / %f \n",MatrizIntermedia[j][i+1],MatrizIntermedia[j][j]);
       for(int k = j; k < Orden +1; k++){ 
-        Matriz[k][i+1] = Matriz[k][i+1]-(Matriz[k][j]*aux);
+        MatrizIntermedia[k][i+1] = MatrizIntermedia[k][i+1]-(MatrizIntermedia[k][j]*aux);
       }
   }
   }
@@ -110,7 +110,7 @@ int main(){
   printf("Tu nueva matriz es:\n");
   for(int i = 0; i < Orden; i++){
     for (int j = 0; j < Orden + 1; j++){
-      printf("%f \t",Matriz[j][i]);
+      printf("%f \t",MatrizIntermedia[j][i]);
     }
     printf("\n");
   }
@@ -119,7 +119,7 @@ int main(){
 
   float mult = 1;
   for(int i = Orden-1;i > -1;i--){
-    mult = mult*Matriz[i][i];
+    mult = mult*MatrizIntermedia[i][i];
   }
   printf("El determinante es: %f \n",mult);
   if(mult<1){
@@ -132,9 +132,9 @@ int main(){
   for(int i = Orden-1; i > -1; i--){
     float suma = 0;
     for(int j = i+1; j < Orden; j++){
-      suma += Matriz[j][i] * R[j];
+      suma += MatrizIntermedia[j][i] * R[j];
     }
-    R[i] = (Matriz[Orden][i] - suma) / Matriz[i][i];
+    R[i] = (MatrizIntermedia[Orden][i] - suma) / MatrizIntermedia[i][i];
   }
   
   // Mostrar resultados
@@ -145,28 +145,28 @@ int main(){
 
 //Inferior
 /*
-  float aux = Matriz[3][2]/Matriz[3][3];
+  float aux = MatrizIntermedia[3][2]/MatrizIntermedia[3][3];
   printf("%f \n",aux);
   for(int k = Orden; k >-1; k--){ 
-    Matriz[k][2] = Matriz[k][2]-(Matriz[k][3]*aux);
+    MatrizIntermedia[k][2] = MatrizIntermedia[k][2]-(MatrizIntermedia[k][3]*aux);
   }
 */
 /*
   for(int j = Orden-2; j > -1; j--){
-    float aux = Matriz[3][j]/Matriz[3][3];
+    float aux = MatrizIntermedia[3][j]/MatrizIntermedia[3][3];
     printf("%f \n",aux);
     for(int k = Orden; k >-1; k--){ 
-      Matriz[k][j] = Matriz[k][j]-(Matriz[k][3]*aux);
+      MatrizIntermedia[k][j] = MatrizIntermedia[k][j]-(MatrizIntermedia[k][3]*aux);
     }
   }
 */
   for(int m = Orden-1;m>-1;m--){
     //printf("%d \n",m);
     for(int j = m-1; j > -1; j--){
-      float aux = Matriz[m][j]/Matriz[m][m];
+      float aux = MatrizIntermedia[m][j]/MatrizIntermedia[m][m];
       //printf("%f \n",aux);
       for(int k = Orden; k >-1; k--){ 
-        Matriz[k][j] = Matriz[k][j]-(Matriz[k][m]*aux);
+        MatrizIntermedia[k][j] = MatrizIntermedia[k][j]-(MatrizIntermedia[k][m]*aux);
       }
     }
   }
@@ -174,7 +174,7 @@ int main(){
   printf("Tu matriz final es:\n");
   for(int i = 0; i < Orden; i++){
     for (int j = 0; j < Orden + 1; j++){
-      printf("%f \t",Matriz[j][i]);
+      printf("%f \t",MatrizIntermedia[j][i]);
     }
     printf("\n");
   }
@@ -182,8 +182,8 @@ int main(){
   float X[Orden];
   printf("Resultados: \n");
   for(int i = 0; i<Orden;i++){
-    X[i]=Matriz[Orden][i]/Matriz[i][i];
-    //printf("%f \n",Matriz[Orden][i]);
+    X[i]=MatrizIntermedia[Orden][i]/MatrizIntermedia[i][i];
+    //printf("%f \n",MatrizIntermedia[Orden][i]);
     printf("X[%d] = %f \n",i,X[i]);
   }
 

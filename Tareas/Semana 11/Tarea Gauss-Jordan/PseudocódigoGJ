@@ -22,33 +22,25 @@ INICIO PROGRAMA
         IMPRIMIR salto de línea
     FIN PARA
     
-    // CREAR MATRIZ INTERMEDIA NORMALIZADA
-    DECLARAR MatrizIntermedia[Orden+1][Orden] como real
     
-    // COPIAR MATRIZ ORIGINAL
-    PARA i = 0 HASTA Orden-1 HACER
-        PARA j = 0 HASTA Orden HACER
-            MatrizIntermedia[j][i] = Matriz[j][i]
-        FIN PARA
-    FIN PARA
     
-    // NORMALIZAR MATRIZ INTERMEDIA
+    // NORMALIZAR MATRIZ 
     PARA i = 0 HASTA Orden-1 HACER
         max_val = 0
         // ENCONTRAR VALOR MÁXIMO EN LA FILA
         PARA j = 0 HASTA Orden-1 HACER
-            SI MatrizIntermedia[j][i] > max_val ENTONCES
-                max_val = MatrizIntermedia[j][i]
+            SI Matriz[j][i] > max_val ENTONCES
+                max_val = Matriz[j][i]
             FIN SI
         FIN PARA
         
     FIN PARA
     
     // MOSTRAR MATRIZ INTERMEDIA NORMALIZADA
-    IMPRIMIR "Matriz intermedia normalizada:"
+    IMPRIMIR "Matriz normalizada:"
     PARA i = 0 HASTA Orden-1 HACER
         PARA j = 0 HASTA Orden HACER
-            IMPRIMIR MatrizIntermedia[j][i] + "\t"
+            IMPRIMIR Matriz[j][i] + "\t"
         FIN PARA
         IMPRIMIR salto de línea
     FIN PARA

@@ -1,6 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Función para resolver con cualquier vector B
+void resolverSistema(int Orden, float L[Orden][Orden], float U[Orden][Orden], float B[Orden]) {
+    // Resolver Ly = B
+    float Y[Orden];
+    for (int i = 0; i < Orden; i++) {
+        float suma = 0;
+        for (int j = 0; j < i; j++) {
+            suma += L[i][j] * Y[j];
+        }
+        Y[i] = (B[i] - suma) / L[i][i];
+    }
+
+    // Resolver Ux = y
+    float X[Orden];
+    for (int i = Orden - 1; i >= 0; i--) {
+        float suma = 0;
+        for (int j = i + 1; j < Orden; j++) {
+            suma += U[i][j] * X[j];
+        }
+        X[i] = (Y[i] - suma) / U[i][i];
+    }
+
+    // Mostrar resultados
+    printf("\nLas soluciones son:\n");
+    for (int i = 0; i < Orden; i++) {
+        printf("x%d = %f\n", i + 1, X[i]);
+    }
+}
+
 int main() {
     int Orden;
     printf("Porfavor mencione el número de incógnitas\n");
@@ -48,53 +77,39 @@ int main() {
         printf("| %.2f\n", B[i]);
     }
 
-/*
-    // Factorización LU
+    // Factorización LU CON PIVOTEO
     for (int i = 0; i < Orden; i++) {
-        // Calcular U
-        for (int j = i; j < Orden; j++) {
-            float suma = 0;
-            U[i][j] = Matriz[i][j] - suma;
-        }
-    }
-*/
-
-/*
-    // Factorización LU
-    for (int i = 0; i < Orden; i++) {
-        // Calcular U
-        for (int j = i; j < Orden; j++) {
-            float suma = 0;
-            for (int k = 0; k < i; k++) {
-                suma += L[i][k] * U[k][j];
+        // PIVOTEO: Buscar la fila con el máximo valor en la columna i
+        int fila_max = i;
+        float max_val = abs(Matriz[i][i]);
+        for (int k = i + 1; k < Orden; k++) {
+            if (abs(Matriz[k][i]) > max_val) {
+                max_val = abs(Matriz[k][i]);
+                fila_max = k;
             }
-            U[i][j] = Matriz[i][j] - suma;
         }
-    }
-*/
-
-/*
-    // Factorización LU
-    for (int i = 0; i < Orden; i++) {
-        // Calcular U
-        for (int j = i; j < Orden; j++) {
-            float suma = 0;
-            for (int k = 0; k < i; k++) {
-                suma += L[i][k] * U[k][j];
+        
+        // Intercambiar filas si es necesario
+        if (fila_max != i) {
+            for (int j = 0; j < Orden; j++) {
+                // Intercambiar en Matriz
+                float temp = Matriz[i][j];
+                Matriz[i][j] = Matriz[fila_max][j];
+                Matriz[fila_max][j] = temp;
+                
+                // Intercambiar en L (solo la parte ya calculada)
+                if (j < i) {
+                    temp = L[i][j];
+                    L[i][j] = L[fila_max][j];
+                    L[fila_max][j] = temp;
+                }
             }
-            U[i][j] = Matriz[i][j] - suma;
+            // Intercambiar en B
+            float temp = B[i];
+            B[i] = B[fila_max];
+            B[fila_max] = temp;
         }
 
-        // Calcular L
-        for (int j = i + 1; j < Orden; j++) {
-            float suma = 0;
-            L[j][i] = (Matriz[j][i] - suma) / U[i][i];
-        }
-    }
-*/
-
-    // Factorización LU
-    for (int i = 0; i < Orden; i++) {
         // Calcular U
         for (int j = i; j < Orden; j++) {
             float suma = 0;
@@ -104,13 +119,18 @@ int main() {
             U[i][j] = Matriz[i][j] - suma;
         }
 
-        // Calcular L
-        for (int j = i + 1; j < Orden; j++) {
-            float suma = 0;
-            for (int k = 0; k < i; k++) {
-                suma += L[j][k] * U[k][i];
+        // Calcular L (solo si U[i][i] no es cero)
+        if (abs(U[i][i]) > 1e-10) {
+            for (int j = i + 1; j < Orden; j++) {
+                float suma = 0;
+                for (int k = 0; k < i; k++) {
+                    suma += L[j][k] * U[k][i];
+                }
+                L[j][i] = (Matriz[j][i] - suma) / U[i][i];
             }
-            L[j][i] = (Matriz[j][i] - suma) / U[i][i];
+        } else {
+            printf("Error: División por cero detectada en la factorización LU\n");
+            return 1;
         }
     }
 
@@ -130,17 +150,6 @@ int main() {
         printf("\n");
     }
 
-/*
-    // Guardar matrices L y U para reutilizar
-    float L_guardada[Orden][Orden];
-    float U_guardada[Orden][Orden];
-    for (int i = 0; i < Orden; i++) {
-        for (int j = 0; j < Orden; j++) {
-            L_guardada[i][j] = L[i][j];
-        }
-    }
-*/
-
     // Guardar matrices L y U para reutilizar
     float L_guardada[Orden][Orden];
     float U_guardada[Orden][Orden];
@@ -151,95 +160,9 @@ int main() {
         }
     }
 
-/*
-    // Función para resolver con cualquier vector B
-    void resolverSistema(float L[Orden][Orden], float U[Orden][Orden], float B[Orden]) {
-        // Resolver Ly = B
-        float Y[Orden];
-        for (int i = 0; i < Orden; i++) {
-            float suma = 0;
-            Y[i] = (B[i] - suma) / L[i][i];
-        }
-    }
-*/
-
-/*
-    // Función para resolver con cualquier vector B
-    void resolverSistema(float L[Orden][Orden], float U[Orden][Orden], float B[Orden]) {
-        // Resolver Ly = B
-        float Y[Orden];
-        for (int i = 0; i < Orden; i++) {
-            float suma = 0;
-            for (int j = 0; j < i; j++) {
-                suma += L[i][j] * Y[j];
-            }
-            Y[i] = (B[i] - suma) / L[i][i];
-        }
-    }
-*/
-
-/*
-    // Función para resolver con cualquier vector B
-    void resolverSistema(float L[Orden][Orden], float U[Orden][Orden], float B[Orden]) {
-        // Resolver Ly = B
-        float Y[Orden];
-        for (int i = 0; i < Orden; i++) {
-            float suma = 0;
-            for (int j = 0; j < i; j++) {
-                suma += L[i][j] * Y[j];
-            }
-            Y[i] = (B[i] - suma) / L[i][i];
-        }
-
-        // Resolver Ux = y
-        float X[Orden];
-        for (int i = Orden - 1; i >= 0; i--) {
-            float suma = 0;
-            X[i] = (Y[i] - suma) / U[i][i];
-        }
-    }
-*/
-
-    // Función para resolver con cualquier vector B
-    void resolverSistema(float L[Orden][Orden], float U[Orden][Orden], float B[Orden]) {
-        // Resolver Ly = B
-        float Y[Orden];
-        for (int i = 0; i < Orden; i++) {
-            float suma = 0;
-            for (int j = 0; j < i; j++) {
-                suma += L[i][j] * Y[j];
-            }
-            Y[i] = (B[i] - suma) / L[i][i];
-        }
-
-        // Resolver Ux = y
-        float X[Orden];
-        for (int i = Orden - 1; i >= 0; i--) {
-            float suma = 0;
-            for (int j = i + 1; j < Orden; j++) {
-                suma += U[i][j] * X[j];
-            }
-            X[i] = (Y[i] - suma) / U[i][i];
-        }
-
-        // Mostrar resultados
-        printf("\nLas soluciones son:\n");
-        for (int i = 0; i < Orden; i++) {
-            printf("x%d = %f\n", i + 1, X[i]);
-        }
-    }
-
     // Resolver sistema inicial
     printf("\n--- SOLUCION INICIAL ---");
-    resolverSistema(L_guardada, U_guardada, B);
-
-/*
-    // Calcular determinante
-    float mult = 1;
-    for (int i = 0; i < Orden; i++) {
-        mult = mult * U[i][i];
-    }
-*/
+    resolverSistema(Orden, L_guardada, U_guardada, B);
 
     // Calcular determinante
     float mult = 1;
@@ -250,33 +173,6 @@ int main() {
     if (mult < 1) {
         printf("Advertencia, el determinante tiene un valor muy bajo (<1)\n");
     }
-
-/*
-    // Bucle para cambiar vector B
-    char opcion;
-    do {
-        printf("\n¿Desea cambiar el vector B y resolver nuevamente? (s/n): ");
-        scanf(" %c", &opcion);
-    } while (opcion == 's' || opcion == 'S');
-*/
-
-/*
-    // Bucle para cambiar vector B
-    char opcion;
-    do {
-        printf("\n¿Desea cambiar el vector B y resolver nuevamente? (s/n): ");
-        scanf(" %c", &opcion);
-
-        if (opcion == 's' || opcion == 'S') {
-            printf("Ingrese el nuevo vector B:\n");
-            float nuevo_B[Orden];
-            for (int i = 0; i < Orden; i++) {
-                printf("Valor b[%d]: ", i);
-                scanf("%f", &nuevo_B[i]);
-            }
-        }
-    } while (opcion == 's' || opcion == 'S');
-*/
 
     // Bucle para cambiar vector B
     char opcion;
@@ -302,7 +198,7 @@ int main() {
             }
 
             // Reutilizar L y U guardadas
-            resolverSistema(L_guardada, U_guardada, nuevo_B);
+            resolverSistema(Orden, L_guardada, U_guardada, nuevo_B);
         }
     } while (opcion == 's' || opcion == 'S');
 

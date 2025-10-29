@@ -1,0 +1,158 @@
+INICIO PROGRAMA
+
+    LEER Orden
+    
+    DECLARAR Matriz[Orden][Orden], B[Orden], L[Orden][Orden], U[Orden][Orden]
+    
+    // Inicializar L y U
+    PARA i = 0 HASTA Orden-1
+        PARA j = 0 HASTA Orden-1
+            SI i == j ENTONCES
+                L[i][j] = 1.0
+            SINO
+                L[i][j] = 0.0
+            FIN SI
+            U[i][j] = 0.0
+        FIN PARA
+    FIN PARA
+    
+    // Ingresar matriz de coeficientes
+    IMPRIMIR "Ingrese matriz de coeficientes:"
+    PARA i = 0 HASTA Orden-1
+        PARA j = 0 HASTA Orden-1
+            LEER Matriz[i][j]
+        FIN PARA
+    FIN PARA
+    
+    // Ingresar vector B
+    IMPRIMIR "Ingrese vector B:"
+    PARA i = 0 HASTA Orden-1
+        LEER B[i]
+    FIN PARA
+    
+    // Mostrar sistema
+    IMPRIMIR "Sistema de ecuaciones:"
+    PARA i = 0 HASTA Orden-1
+        PARA j = 0 HASTA Orden-1
+            IMPRIMIR Matriz[i][j]
+        FIN PARA
+        IMPRIMIR "| " + B[i]
+    FIN PARA
+    
+    // Factorización LU
+    PARA i = 0 HASTA Orden-1
+        // Calcular U
+        PARA j = i HASTA Orden-1
+            suma = 0
+            PARA k = 0 HASTA i-1
+                suma = suma + L[i][k] * U[k][j]
+            FIN PARA
+            U[i][j] = Matriz[i][j] - suma
+        FIN PARA
+        
+        // Calcular L
+        PARA j = i+1 HASTA Orden-1
+            suma = 0
+            PARA k = 0 HASTA i-1
+                suma = suma + L[j][k] * U[k][i]
+            FIN PARA
+            L[j][i] = (Matriz[j][i] - suma) / U[i][i]
+        FIN PARA
+    FIN PARA
+    
+    // Mostrar matrices L y U
+    IMPRIMIR "Matriz L:"
+    PARA i = 0 HASTA Orden-1
+        PARA j = 0 HASTA Orden-1
+            IMPRIMIR L[i][j]
+        FIN PARA
+    FIN PARA
+    
+    IMPRIMIR "Matriz U:"
+    PARA i = 0 HASTA Orden-1
+        PARA j = 0 HASTA Orden-1
+            IMPRIMIR U[i][j]
+        FIN PARA
+    FIN PARA
+    
+    // Guardar matrices L y U
+    DECLARAR L_guardada[Orden][Orden], U_guardada[Orden][Orden]
+    PARA i = 0 HASTA Orden-1
+        PARA j = 0 HASTA Orden-1
+            L_guardada[i][j] = L[i][j]
+            U_guardada[i][j] = U[i][j]
+        FIN PARA
+    FIN PARA
+    
+    // Función resolverSistema
+    FUNCIÓN resolverSistema(L, U, B)
+        // Resolver Ly = B
+        DECLARAR Y[Orden]
+        PARA i = 0 HASTA Orden-1
+            suma = 0
+            PARA j = 0 HASTA i-1
+                suma = suma + L[i][j] * Y[j]
+            FIN PARA
+            Y[i] = (B[i] - suma) / L[i][i]
+        FIN PARA
+        
+        // Resolver Ux = y
+        DECLARAR X[Orden]
+        PARA i = Orden-1 HASTA 0 (decrementando)
+            suma = 0
+            PARA j = i+1 HASTA Orden-1
+                suma = suma + U[i][j] * X[j]
+            FIN PARA
+            X[i] = (Y[i] - suma) / U[i][i]
+        FIN PARA
+        
+        // Mostrar resultados
+        IMPRIMIR "Soluciones:"
+        PARA i = 0 HASTA Orden-1
+            IMPRIMIR "x" + (i+1) + " = " + X[i]
+        FIN PARA
+    FIN FUNCIÓN
+    
+    // Resolver sistema inicial
+    IMPRIMIR "--- SOLUCION INICIAL ---"
+    resolverSistema(L_guardada, U_guardada, B)
+    
+    // Calcular determinante
+    mult = 1
+    PARA i = 0 HASTA Orden-1
+        mult = mult * U[i][i]
+    FIN PARA
+    IMPRIMIR "Determinante: " + mult
+    SI mult < 1 ENTONCES
+        IMPRIMIR "Advertencia: determinante muy bajo (<1)"
+    FIN SI
+    
+    // Bucle para cambiar vector B
+    HACER
+        IMPRIMIR "¿Cambiar vector B? (s/n):"
+        LEER opcion
+        
+        SI opcion == 's' O opcion == 'S' ENTONCES
+            // Ingresar nuevo vector B
+            DECLARAR nuevo_B[Orden]
+            IMPRIMIR "Ingrese nuevo vector B:"
+            PARA i = 0 HASTA Orden-1
+                LEER nuevo_B[i]
+            FIN PARA
+            
+            // Mostrar nuevo sistema
+            IMPRIMIR "--- SOLUCION CON NUEVO VECTOR B ---"
+            IMPRIMIR "Nuevo sistema:"
+            PARA i = 0 HASTA Orden-1
+                PARA j = 0 HASTA Orden-1
+                    IMPRIMIR Matriz[i][j]
+                FIN PARA
+                IMPRIMIR "| " + nuevo_B[i]
+            FIN PARA
+            
+            // Resolver con nuevo B
+            resolverSistema(L_guardada, U_guardada, nuevo_B)
+        FIN SI
+    MIENTRAS opcion == 's' O opcion == 'S'
+    
+    FIN PROGRAMA

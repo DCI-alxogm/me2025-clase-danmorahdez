@@ -1,0 +1,55 @@
+FUNCIÓN f(x[], n):
+    RETORNAR 2*x[0]*x[1] + 2*x[0] - x[0]^2 - 2*x[1]^2
+
+FUNCIÓN gradiente(x[], grad[], n, h):
+    PARA i = 0 HASTA n-1 HACER:
+        temp_plus = COPIAR(x)
+        temp_minus = COPIAR(x)
+        
+        temp_plus[i] = temp_plus[i] + h
+        temp_minus[i] = temp_minus[i] - h
+        
+        f_plus = f(temp_plus, n)
+        f_minus = f(temp_minus, n)
+        
+        grad[i] = (f_plus - f_minus) / (2*h)
+    FIN PARA
+
+PROGRAMA PRINCIPAL:
+    n = LEER("Ingresa numero de dimensiones: ")
+    
+    x = ARREGLO[n]
+    g = ARREGLO[n]
+    
+    PARA i = 0 HASTA n-1 HACER:
+        x[i] = LEER("x[" + i + "]: ")
+    
+    alpha = 0.01
+    tol = 0.001
+    max_iter = 100
+    h = 0.000001
+    
+    IMPRIMIR "Método del Gradiente"
+    IMPRIMIR "Iter\tx0\t\tx1\t\tf(x)"
+    
+    PARA iter = 0 HASTA max_iter-1 HACER:
+        gradiente(x, g, n, h)
+        
+        norma_grad = 0
+        PARA i = 0 HASTA n-1 HACER:
+            norma_grad = norma_grad + g[i]^2
+        norma_grad = RAIZ(norma_grad)
+        
+        IMPRIMIR iter+1, x[0], x[1], f(x, n)
+        
+        SI norma_grad < tol ENTONCES:
+            ROMPER
+        
+        PARA i = 0 HASTA n-1 HACER:
+            x[i] = x[i] + alpha * g[i]
+    
+    IMPRIMIR "Resultado final:"
+    PARA i = 0 HASTA n-1 HACER:
+        IMPRIMIR "x[" + i + "] = " + x[i]
+    IMPRIMIR "f(x) = " + f(x, n)
+    IMPRIMIR "Iteraciones: " + (iter+1)

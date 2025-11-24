@@ -1,0 +1,126 @@
+INICIO PROGRAMA PRINCIPAL
+
+CONSTANTES:
+  MAX_PARAMS = 4
+  MAX_ITER = 10000
+  TOL = 1e-8
+  MAX_PUNTOS = 100
+
+DEFINIR ESTRUCTURAS:
+  Resultado: contiene parámetros b[4] y valor chi2
+  Dataset: contiene arrays aw[100], Xe[100] y contador n
+
+FUNCIÓN modelo_peleg(aw, b):
+  RETORNAR b0 * aw^b1 + b2 * aw^b3
+
+FUNCIÓN modelo_dlp(aw, b):
+  SI aw <= 0 ENTONCES aw = 1e-6
+  SI aw >= 1 ENTONCES aw = 1 - 1e-6
+  x = log(-log(aw))
+  RETORNAR b0 + b1*x + b2*x² + b3*x³
+
+FUNCIÓN chi2_peleg(b, aw, Xe, n):
+  chi2 = 0
+  PARA i = 0 HASTA n-1:
+    pred = modelo_peleg(aw[i], b)
+    diff = Xe[i] - pred
+    chi2 = chi2 + diff²
+  RETORNAR chi2
+
+FUNCIÓN chi2_dlp(b, aw, Xe, n):
+  chi2 = 0
+  PARA i = 0 HASTA n-1:
+    pred = modelo_dlp(aw[i], b)
+    diff = Xe[i] - pred
+    chi2 = chi2 + diff²
+  RETORNAR chi2
+
+FUNCIÓN gradiente_numerico(func, b, grad, aw, Xe, n_data):
+  h = 1e-6
+  PARA j = 0 HASTA 3:
+    b_temp = b
+    b_temp[j] = b[j] + h
+    f_plus = func(b_temp, aw, Xe, n_data)
+    
+    b_temp[j] = b[j] - h
+    f_minus = func(b_temp, aw, Xe, n_data)
+    
+    grad[j] = (f_plus - f_minus) / (2*h)
+
+FUNCIÓN gradiente_descendente(func, b, aw, Xe, n_data, chi2_final):
+  learning_rate = 0.001
+  chi2_prev = func(b, aw, Xe, n_data)
+  
+  PARA iter = 0 HASTA MAX_ITER-1:
+    CALCULAR gradiente_numerico
+    ACTUALIZAR b: b = b - learning_rate * grad
+    
+    chi2_actual = func(b, aw, Xe, n_data)
+    
+    SI |chi2_actual - chi2_prev| < TOL ENTONCES
+      ROMPER
+    FIN SI
+    
+    SI chi2_actual > chi2_prev ENTONCES
+      learning_rate = learning_rate * 0.5
+    SINO SI iter % 100 == 0 ENTONCES
+      learning_rate = learning_rate * 0.95
+    FIN SI
+    
+    chi2_prev = chi2_actual
+  FIN PARA
+  
+  chi2_final = chi2_actual
+
+FUNCIÓN leer_datos(nombre_archivo, dataset):
+  ABRIR archivo
+  SI error AL ABRIR ENTONCES RETORNAR -1
+  
+  LEER y DESCARTAR primera línea (encabezados)
+  contador = 0
+  
+  MIENTRAS haya líneas Y contador < MAX_PUNTOS:
+    LEER línea: tipo|replica|temperatura|aw|humedad_base_humeda|humedad_base_seca
+    SI lectura EXITOSA ENTONCES
+      dataset.aw[contador] = aw
+      dataset.Xe[contador] = humedad_base_seca
+      contador = contador + 1
+    FIN SI
+  FIN MIENTRAS
+  
+  dataset.n = contador
+  CERRAR archivo
+  RETORNAR 0
+
+FUNCIÓN ajustar_modelos(aw, Xe, n, nombre):
+  SI n == 0 ENTONCES MOSTRAR error y RETORNAR
+  
+  # Ajustar modelo Peleg
+  b_peleg = [1.0, 1.0, 1.0, 1.0]
+  LLAMAR gradiente_descendente(chi2_peleg, b_peleg, aw, Xe, n, chi2_peleg)
+  
+  # Ajustar modelo DLP
+  b_dlp = [1.0, 0.1, 0.01, 0.001]
+  LLAMAR gradiente_descendente(chi2_dlp, b_dlp, aw, Xe, n, chi2_dlp)
+  
+  MOSTRAR resultados:
+    - Parámetros ajustados de ambos modelos
+    - Valores de chi²
+    - Mejor modelo (menor chi²)
+
+PROGRAMA PRINCIPAL:
+  MOSTRAR encabezado
+  
+  archivos = ["Experimental water adsorption isotherms.xlsx"]
+  nombres = ["Roasted beans (25°C)"]
+  
+  PARA CADA archivo EN archivos:
+    dataset = NUEVO Dataset
+    SI leer_datos(archivo, dataset) == 0 ENTONCES
+      LLAMAR ajustar_modelos(dataset.aw, dataset.Xe, dataset.n, nombre)
+    FIN SI
+  FIN PARA
+  
+  RETORNAR 0
+
+FIN PROGRAMA PRINCIPAL

@@ -1,0 +1,35 @@
+COMENZAR Programa Paracaídas con Método de Euler
+
+  Definir los valores fijos:
+    gravedad = 9.81
+    masa = 68.1
+    resistencia_aire = 12.5
+    velocidad_maxima = 46
+    paso_tiempo = 0.1
+    tiempo_actual = 0
+
+  Empezar con:
+    velocidad_anterior = 0
+    contador = 0
+    max_iteraciones = 200
+
+  Mostrar título de la tabla
+
+  MIENTRAS contador sea menor que max_iteraciones HACER:
+
+    Calcular la aceleración en este momento:
+      aceleracion = gravedad - (resistencia_aire/masa) * velocidad_anterior
+
+    Calcular nueva velocidad:
+      velocidad_nueva = velocidad_anterior + aceleracion * paso_tiempo
+
+    Mostrar: contador, tiempo_actual, velocidad_nueva
+
+    Preparar siguiente paso:
+      velocidad_anterior = velocidad_nueva
+      tiempo_actual = tiempo_actual + paso_tiempo
+      contador = contador + 1
+
+  FIN MIENTRAS
+
+TERMINAR

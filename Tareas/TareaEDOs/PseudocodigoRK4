@@ -1,0 +1,37 @@
+COMENZAR Programa Paracaídas con Método RK4
+
+  Usar mismos parámetros que métodos anteriores
+
+  Inicializar variables
+
+  Mostrar encabezados
+
+  PARA contador de 0 a 199 HACER:
+
+    // Calcular 4 diferentes estimaciones de la aceleración
+
+    Primera estimación (k1):
+      Usar velocidad actual
+
+    Segunda estimación (k2):
+      Calcular velocidad a medio paso usando k1
+      Usar esa velocidad para calcular k2
+
+    Tercera estimación (k3):
+      Calcular otra velocidad a medio paso usando k2  
+      Usar esa velocidad para calcular k3
+
+    Cuarta estimación (k4):
+      Calcular velocidad al final del paso usando k3
+      Usar esa velocidad para calcular k4
+
+    // Combinar las 4 estimaciones
+    velocidad_nueva = velocidad_anterior + (paso/6) * (k1 + 2*k2 + 2*k3 + k4)
+
+    Mostrar tiempo y velocidad
+
+    Preparar siguiente iteración
+
+  FIN PARA
+
+TERMINAR

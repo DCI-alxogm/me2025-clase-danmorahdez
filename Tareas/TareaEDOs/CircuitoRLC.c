@@ -1,4 +1,6 @@
 // Circuito RLC - Oscilaciones con Runge-Kutta 2do Orden
+//El ejemplo para hacer uso de nuestros programas de reslución de EDOs es el de la corriente y el voltaje en un circuito RLC
+//Que esta descrito como una EDO de 2do orden, en este caso vamos a usar Runge-Kutta
 #include <stdio.h>
 #include <math.h>
 
@@ -45,4 +47,5 @@ int main(){
     } while (iter < iter_max);
     
     return 0;
+
 }

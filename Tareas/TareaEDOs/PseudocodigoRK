@@ -1,0 +1,29 @@
+COMENZAR Programa Paracaídas con Método RK2
+
+  Definir los mismos valores fijos que antes
+
+  Empezar con velocidad_anterior = 0, tiempo = 0, contador = 0
+
+  Mostrar tabla de resultados
+
+  REPETIR 200 veces:
+
+    Paso 1: Calcular primera estimación de la aceleración
+      k1 = gravedad - (resistencia/masa) * velocidad_anterior
+
+    Paso 2: Calcular velocidad a medio paso
+      velocidad_media = velocidad_anterior + (paso_tiempo/2) * k1
+
+    Paso 3: Calcular segunda estimación de aceleración
+      k2 = gravedad - (resistencia/masa) * velocidad_media
+
+    Paso 4: Combinar ambas estimaciones
+      velocidad_nueva = velocidad_anterior + paso_tiempo * (k1 + k2)/2
+
+    Mostrar resultados
+
+    Actualizar para siguiente iteración
+
+  FIN REPETIR
+
+TERMINAR

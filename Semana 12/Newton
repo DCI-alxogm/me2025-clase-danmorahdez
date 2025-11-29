@@ -4,14 +4,16 @@
 
 double funcion(double x) {
     return x*x*x - 3*x*x + 2*x;
+    
 }
-
 double derivada(double x) {
     return 3*x*x - 6*x + 2;
+    
 }
 
 double segunda_derivada(double x) {
     return 6*x - 6;
+
 }
 
 double newton_optimizacion(double x0, double tol, int max_iter, int *tipo_punto, int *iteraciones) {
@@ -19,8 +21,6 @@ double newton_optimizacion(double x0, double tol, int max_iter, int *tipo_punto,
     double f_prima, f_segunda;
     int iter = 0;
 
-    printf("\nIteracion\t   x\t\t   f'(x)\t   f''(x)\t   f(x)\t\t   Tipo\n");
-    printf("------------------------------------------------------------------------------------------------\n");
     
     while (iter < max_iter) {
         f_prima = derivada(x);
@@ -35,33 +35,31 @@ double newton_optimizacion(double x0, double tol, int max_iter, int *tipo_punto,
                 *tipo_punto = 3; 
             }
             
-            printf("%d\t\t%.6f\t%.6f\t%.6f\t%.6f\t", 
+            printf("%d\t%f\t%f\t%f\t%f\t", 
                    iter, x, f_prima, f_segunda, funcion(x));
             
-            if (*tipo_punto == 1) printf("MINIMO\n");
-            else if (*tipo_punto == 2) printf("MAXIMO\n");
-            else printf("PUNTO SILLA\n");
+            if (*tipo_punto == 1) printf("minimo\n");
+            else if (*tipo_punto == 2) printf("maximo\n");
+            else printf("indeterminado\n");
             
             *iteraciones = iter;
             return x;
         }
-        
         if (fabs(f_segunda) < 1e-15) {
-            printf("Error: Segunda derivada cercana a cero\n");
+            printf("Error");
             *tipo_punto = 0; 
             *iteraciones = iter;
             return x;
         }
-        
         double x_nuevo = x - f_prima / f_segunda;
         
-        printf("%d\t\t%.6f\t%.6f\t%.6f\t%.6f\t", 
+        printf("%d\t%f\t%f\t%f\t%f\t", 
                iter, x, f_prima, f_segunda, funcion(x));
  
         if (f_segunda > 0) {
-            printf("CONVEXO\n");
+            printf("Convexo\n");
         } else {
-            printf("CONCAVO\n");
+            printf("Cóncavo\n");
         }
  
         if (fabs(x_nuevo - x) < tol) {
@@ -92,14 +90,7 @@ double newton_optimizacion(double x0, double tol, int max_iter, int *tipo_punto,
 int main() {
     double x0, tolerancia;
     int max_iteraciones, tipo_punto, iteraciones;
-    
-    printf("==================================================\n");
-    printf("       METODO DE NEWTON PARA OPTIMIZACION\n");
-    printf("==================================================\n");
-    printf("Funcion: f(x) = x³ - 3x² + 2x\n");
-    printf("Derivada: f'(x) = 3x² - 6x + 2\n");
-    printf("Segunda derivada: f''(x) = 6x - 6\n\n");
-    
+
     printf("Ingrese el punto inicial (x0): ");
     scanf("%lf", &x0);
     
@@ -109,43 +100,21 @@ int main() {
     printf("Ingrese el máximo número de iteraciones: ");
     scanf("%d", &max_iteraciones);
     
-    printf("\nPunto inicial: x0 = %.6f\n", x0);
-    printf("Tolerancia: %e\n", tolerancia);
-    printf("Máximo de iteraciones: %d\n", max_iteraciones);
+    printf("\nIteracion\t   x\t\t   f'(x)\t   f''(x)\t   f(x)\t\t   Tipo\n");
+    printf("------------------------------------------------------------------------------------------------\n");
     
     double resultado = newton_optimizacion(x0, tolerancia, max_iteraciones, &tipo_punto, &iteraciones);
     
     printf("------------------------------------------------------------------------------------------------\n");
     printf("RESULTADO FINAL:\n");
-    printf("------------------------------------------------------------------------------------------------\n");
-    printf("Punto critico encontrado: x = %.6f\n", resultado);
-    printf("f(%.6f) = %.6f\n", resultado, funcion(resultado));
-    printf("f'(%.6f) = %.6f\n", resultado, derivada(resultado));
-    printf("f''(%.6f) = %.6f\n", resultado, segunda_derivada(resultado));
-    
+    printf("Punto critico: %f\n", resultado);
+    printf("f(%f) = %f\n", resultado, funcion(resultado));
     printf("Tipo de punto: ");
-    switch(tipo_punto) {
-        case 1: printf("MINIMO LOCAL\n"); break;
-        case 2: printf("MAXIMO LOCAL\n"); break;
-        case 3: printf("PUNTO SILLA O INDETERMINADO\n"); break;
-        default: printf("NO CONVERGIO\n"); break;
-    }
-    
-    printf("Iteraciones realizadas: %d\n", iteraciones);
-    
-    printf("\n==================================================\n");
-    printf("ANALISIS DE LA FUNCION EN EL PUNTO CRITICO\n");
-    printf("==================================================\n");
-    printf("Valores alrededor del punto critico:\n");
-    for (double x = resultado - 0.3; x <= resultado + 0.3; x += 0.1) {
-        printf("f(%.2f) = %8.4f, f'(%.2f) = %8.4f, f''(%.2f) = %8.4f\n", 
-               x, funcion(x), x, derivada(x), x, segunda_derivada(x));
-    }
-    
-    // Puntos críticos teóricos para comparación
-    printf("\nPuntos criticos teoricos:\n");
-    printf("x = 1 - √(3)/3 ≈ 0.4226 (Maximo)\n");
-    printf("x = 1 + √(3)/3 ≈ 1.5774 (Minimo)\n");
+    if (tipo_punto == 1) printf("minimo\n");
+    else if (tipo_punto == 2) printf("maximo\n");
+    else if (tipo_punto == 3) printf("indeterminado\n");
+    else printf("no convergio\n");
+    printf("Iteraciones: %d\n", iteraciones);
     
     return 0;
 }
